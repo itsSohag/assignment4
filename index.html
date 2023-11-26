@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+		
+		<title>Weather App for 5 days</title>
+	
+		<link href="http://fonts.googleapis.com/css?family=Roboto:300,400,700|" rel="stylesheet" type="text/css">
+		<link href="fonts/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+		<link rel="stylesheet" href="style.css">
+		
+
+	</head>
+
+
+	<body>
+		
+		<div class="site-content">
+			<div class="hero" id="hero">
+				<div class="container">
+					<form action="" class="find-location" method="post">
+						<input type="text" placeholder="Insert any location..." name="city" value="">
+						<input type="button" value="Find" onClick="testResults(this.form)">
+					</form>
+
+				</div>
+			</div>
+			<div class="forecast-table">
+				<div class="container">
+					<div class="forecast-container">
+						<div class="today forecast">
+							<div class="forecast-header">
+								<div class="day" id="day1"> <b>Monday</b></div>
+								<div class="date" id="date1">6 Oct</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+                                <div class="location" id="currentWeather">Rainy</div>
+								<div class="location" id="cityName">New York</div>
+								<div class="degree">
+									<div class="num"><span id="mainTemp">23</span><sup>o</sup>C</div>
+									<div class="forecast-icon">
+									</div>	
+								</div>
+								<span><img src="images/icon-umberella.png" alt=""><span id="humidity" >20%</span></span>
+								<span><img src="images/icon-wind.png" alt=""><span id="windSpeed" > <b>18km/h</b></span></span>
+								<span><img src="images/icon-compass.png" alt=""><span id="windDirection" >East</span></span>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day" id="day2">Tuesday</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+								</div>
+								<div class="degree"><span id="secondDayHighest">23</span><sup>o</sup>C</div>
+								<small><span id="secondDayLowest">23</span><sup>o</sup></small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day" id="day3">Wednesday</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+								</div>
+								<div class="degree"><span id="thirdDayHighest">23</span><sup>o</sup>C</div>
+								<small><span id="thirdDayLowest">23</span><sup>o</sup></small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day" id="day4">Thursday</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+								</div>
+								<div class="degree"><span id="fourthDayHighest">23</span><sup>o</sup>C</div>
+								<small><span id="fourthDayLowest">23</span><sup>o</sup></small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day" id="day5">Friday</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+								</div>
+								<div class="degree"><span id="fifthDayHighest">23</span><sup>o</sup>C</div>
+								<small><span id="fifthDayLowest">23</span><sup>o</sup></small>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+            <div class="dummy">
+            </div>
+        </div>
+
+		
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/plugins.js"></script>
+		<script src="js/app.js"></script>
+        
+        <script type="text/javascript">
+            function setDetails(jsonData){
+              city_name = jsonData.city.name + ", " + jsonData.city.country;
+              document.getElementById('cityName').innerHTML = city_name;
+              date_today = jsonData.list[0].dt_txt.split(" ");
+              dateObj = new Date(date_today[0]);
+              document.getElementById('mainTemp').innerHTML = getCelcius(jsonData.list[0].main.temp);
+              document.getElementById('date1').innerHTML = dateObj.toDateString().split(" ")[1] + " " + dateObj.toDateString().split(" ")[2];
+              document.getElementById('day1').innerHTML = dateObj.toDateString().split(" ")[0];
+              document.getElementById('humidity').innerHTML ="<b>"+ jsonData.list[0].main.humidity + "%"+"</b>";
+              document.getElementById('currentWeather').innerHTML = "<b>"+jsonData.list[0].weather[0].main+"</b>";
+              document.getElementById('windSpeed').innerHTML ="<b>"+ jsonData.list[0].wind.speed + " km/h"+"</b>";
+              document.getElementById('windDirection').innerHTML = "<b>"+jsonData.list[0].wind.deg + " Degree"+"</b>";
+                
+                //SECOND DAY
+                date_second = jsonData.list[1].dt_txt.split(" ");
+                dateObj = new Date(date_second[0]);
+                document.getElementById('day2').innerHTML = dateObj.toDateString().split(" ")[0];
+                let highest = 0;
+                let lowest = 1000;
+                for(let i=1; i<9; i++){
+                    if(parseFloat(jsonData.list[i].main.temp_min) < lowest){
+                        lowest = jsonData.list[i].main.temp_min;
+                    }
+                    if(parseFloat(jsonData.list[i].main.temp_max) > highest){
+                        highest = jsonData.list[i].main.temp_max;
+                    }
+                }
+                document.getElementById('secondDayHighest').innerHTML = getCelcius(highest);
+                document.getElementById('secondDayLowest').innerHTML = getCelcius(lowest);
+                
+                //THIRD DAY
+                date_third = jsonData.list[9].dt_txt.split(" ");
+                dateObj = new Date(date_third[0]);
+                document.getElementById('day3').innerHTML = dateObj.toDateString().split(" ")[0];
+                highest = 0;
+                lowest = 1000;
+                for(let i=9; i<17; i++){
+                    if(parseFloat(jsonData.list[i].main.temp_min) < lowest){
+                        lowest = jsonData.list[i].main.temp_min;
+                    }
+                    if(parseFloat(jsonData.list[i].main.temp_max) > highest){
+                        highest = jsonData.list[i].main.temp_max;
+                    }
+                }
+                document.getElementById('thirdDayHighest').innerHTML = getCelcius(highest);
+                document.getElementById('thirdDayLowest').innerHTML = getCelcius(lowest);
+                
+                //FOURTH DAY
+                date_fourth = jsonData.list[17].dt_txt.split(" ");
+                dateObj = new Date(date_fourth[0]);
+                document.getElementById('day4').innerHTML = dateObj.toDateString().split(" ")[0];
+                highest = 0;
+                lowest = 1000;
+                for(let i=17; i<25; i++){
+                    if(parseFloat(jsonData.list[i].main.temp_min) < lowest){
+                        lowest = jsonData.list[i].main.temp_min;
+                    }
+                    if(parseFloat(jsonData.list[i].main.temp_max) > highest){
+                        highest = jsonData.list[i].main.temp_max;
+                    }
+                }
+                document.getElementById('fourthDayHighest').innerHTML = getCelcius(highest);
+                document.getElementById('fourthDayLowest').innerHTML = getCelcius(lowest);
+                
+                //FIFTH DAY
+                date_fifth = jsonData.list[25].dt_txt.split(" ");
+                dateObj = new Date(date_fifth[0]);
+                document.getElementById('day5').innerHTML = dateObj.toDateString().split(" ")[0];
+                highest = 0;
+                lowest = 1000;
+                for(let i=25; i<33; i++){
+                    if(parseFloat(jsonData.list[i].main.temp_min) < lowest){
+                        lowest = jsonData.list[i].main.temp_min;
+                    }
+                    if(parseFloat(jsonData.list[i].main.temp_max) > highest){
+                        highest = jsonData.list[i].main.temp_max;
+                    }
+                }
+                document.getElementById('fifthDayHighest').innerHTML = getCelcius(highest);
+                document.getElementById('fifthDayLowest').innerHTML = getCelcius(lowest);
+                
+            }
+            
+            async function testResults (form) {
+                var inputValue = form.city.value;
+                const response = await fetch("https://api.openweathermap.org/geo/1.0/direct?q="+inputValue+"&limit=1&appid=");
+                const jsonData2 = await response.json();
+                lat = jsonData2[0].lat;
+                lon = jsonData2[0].lon;
+                const response2 = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&appid=");
+                const jsonData3 = await response2.json();
+                console.log(jsonData3);
+                setDetails(jsonData3);
+            }
+            
+            function getCelcius(temp){
+                c = (temp-273.15);
+                return c.toFixed(1);
+            }
+            
+            async function logJSONData() {
+              //const response = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat=23.71&lon=90.40&appid=");
+              const response = await fetch("https://api.openweathermap.org/data/2.5/forecast?id=1185241&appid=");
+              const jsonData = await response.json();
+              console.log(jsonData);
+              setDetails(jsonData);
+            }
+            logJSONData();
+
+        </script>
+		
+	</body>
+
+</html>
